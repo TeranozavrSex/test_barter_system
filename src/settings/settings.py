@@ -147,7 +147,7 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "/api/login/"
 LOGOUT_URL = "/logout/"
 
 STATIC_ROOT = BASE_DIR.parent / os.getenv("STATIC_PATH", "public/staticfiles/")

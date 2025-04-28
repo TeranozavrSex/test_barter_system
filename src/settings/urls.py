@@ -6,8 +6,7 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
-from user.views import current, login, logout, registration, tg_auth
-from .views import healthcheck, log_error, handle_404, handle_500
+from .views import healthcheck, log_error
 
 
 # Configure error handlers
@@ -25,11 +24,6 @@ urlpatterns = [
     ),
     path("healthcheck/", healthcheck),
     
-    path("registration/", registration),
-    path("login/", auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path("logout/", auth_views.LogoutView.as_view(), name='logout'),
-    path("tg_auth/", tg_auth),
-    path("current/", current),
     path("log_error/", log_error),
     path('api/', include('user.urls')),
     path('', include('barter.urls')),

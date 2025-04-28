@@ -4,6 +4,7 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     tg_id = models.CharField(
         max_length=20,
         editable=False,
@@ -24,6 +25,9 @@ class CustomUser(AbstractUser):
     token_created_at = models.DateTimeField(
         verbose_name="Token created at", null=True, default=None
     )
+
+    def __str__(self):
+        return self.email
 
     class Meta(AbstractUser.Meta):
         verbose_name = "Кастомные пользователи"

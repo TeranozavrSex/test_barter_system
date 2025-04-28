@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Создание предложения обмена</h2>
+    <p>Вы предлагаете обменять: <strong>{{ ad_sender.title }}</strong></p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.ad_receiver.id_for_label }}">Выберите объявление для обмена:</label>
+            {{ form.ad_receiver }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.comment.id_for_label }}">Комментарий к предложению:</label>
+            {{ form.comment }}
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить предложение</button>
+        <a href="{% url 'barter:ad_detail' ad_sender.id %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %} 

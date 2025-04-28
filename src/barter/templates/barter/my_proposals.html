@@ -1,0 +1,88 @@
+{% extends 'barter/base.html' %}
+
+{% block title %}Мои предложения обмена{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Мои предложения обмена</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Отправленные предложения</h3>
+            {% if sent_proposals %}
+                {% for proposal in sent_proposals %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Предложение #{{ proposal.id }}</h5>
+                            <p class="card-text">
+                                <strong>Ваше объявление:</strong> 
+                                <a href="{% url 'barter:ad_detail' proposal.ad_sender.id %}">
+                                    {{ proposal.ad_sender.title }}
+                                </a><br>
+                                <strong>Предлагаемый обмен на:</strong> 
+                                <a href="{% url 'barter:ad_detail' proposal.ad_receiver.id %}">
+                                    {{ proposal.ad_receiver.title }}
+                                </a><br>
+                                <strong>Статус:</strong> 
+                                <span class="badge {% if proposal.status == 'pending' %}bg-warning
+                                                  {% elif proposal.status == 'accepted' %}bg-success
+                                                  {% else %}bg-danger{% endif %}">
+                                    {{ proposal.get_status_display }}
+                                </span><br>
+                                <strong>Комментарий:</strong> {{ proposal.comment }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    У вас нет отправленных предложений
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+            <h3>Полученные предложения</h3>
+            {% if received_proposals %}
+                {% for proposal in received_proposals %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Предложение #{{ proposal.id }}</h5>
+                            <p class="card-text">
+                                <strong>От кого:</strong> {{ proposal.ad_sender.user.email }}<br>
+                                <strong>Предлагает обменять:</strong> 
+                                <a href="{% url 'barter:ad_detail' proposal.ad_sender.id %}">
+                                    {{ proposal.ad_sender.title }}
+                                </a><br>
+                                <strong>На ваше объявление:</strong> 
+                                <a href="{% url 'barter:ad_detail' proposal.ad_receiver.id %}">
+                                    {{ proposal.ad_receiver.title }}
+                                </a><br>
+                                <strong>Статус:</strong> 
+                                <span class="badge {% if proposal.status == 'pending' %}bg-warning
+                                                  {% elif proposal.status == 'accepted' %}bg-success
+                                                  {% else %}bg-danger{% endif %}">
+                                    {{ proposal.get_status_display }}
+                                </span><br>
+                                <strong>Комментарий:</strong> {{ proposal.comment }}
+                            </p>
+                            {% if proposal.status == 'pending' %}
+                                <div class="btn-group">
+                                    <a href="{% url 'barter:update_proposal_status' proposal.id 'accepted' %}" 
+                                       class="btn btn-success">Принять</a>
+                                    <a href="{% url 'barter:update_proposal_status' proposal.id 'rejected' %}" 
+                                       class="btn btn-danger">Отклонить</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    У вас нет полученных предложений
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
