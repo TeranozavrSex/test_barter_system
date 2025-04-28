@@ -1,0 +1,2 @@
+0 3 * * * /home/app/cron/backup_schedule.sh >> /home/app/logs/cron_log.log 2>&1
+10 3 * * 1 /home/app/cron/defender_cleanup.sh >> /home/app/logs/cron_log.log 2>&1

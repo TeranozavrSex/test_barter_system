@@ -1,0 +1,15 @@
+.env
+
+.cache/
+.local/
+public/
+backups/
+poetry.lock
+
+.venv/
+
+*.pyc
+*.log
+
+.bash_history
+.python_history

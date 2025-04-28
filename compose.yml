@@ -1,0 +1,62 @@
+services:
+  barter-autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    container_name: barter-autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - barter-net
+
+  barter-database:
+    image: postgres:15
+    container_name: barter-database
+    restart: always
+    volumes:
+      - /pg_volume-barter/data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    # ports:
+    #   - 5432:5432
+    networks:
+      - barter-net
+
+  barter-backend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: barter-backend
+    restart: always
+    ports:
+      - 127.0.0.1:8000:8000
+    volumes:
+      - ./:/home/app/
+      - ./public/staticfiles:/home/app/public/staticfiles
+      - ./public/mediafiles:/home/app/public/mediafiles
+    user: root
+    depends_on:
+      - barter-database
+    healthcheck:
+      test: curl --fail http://127.0.0.1:8000/healthcheck/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 2
+    networks:
+      - barter-net
+
+  barter-redis:
+    container_name: barter-redis
+    image: redis:latest
+    restart: always
+    # ports:
+    #   - "127.0.0.1:6379:6379"
+    env_file:
+      - ./.env
+    networks:
+      - barter-net
+
+
+networks:
+  barter-net:

@@ -1,0 +1,5 @@
+# Если этой папки не будет то сломается создание логов запуске докера
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
