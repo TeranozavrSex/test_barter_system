@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
@@ -25,11 +26,13 @@ urlpatterns = [
     path("healthcheck/", healthcheck),
     
     path("registration/", registration),
-    path("login/", login),
+    path("login/", auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path("logout/", auth_views.LogoutView.as_view(), name='logout'),
     path("tg_auth/", tg_auth),
-    path("logout/", logout),
     path("current/", current),
     path("log_error/", log_error),
+    path('api/', include('user.urls')),
+    path('', include('barter.urls')),
 ]
 
 # Serve static files in development
@@ -38,30 +41,30 @@ if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
-#EXAMPLES
-from .aboba_examples import (
-    basic_example,
-    json_example,
-    multiple_response_types,
-    complex_params_example,
-    nested_arrays_example,
-    custom_serializer_fields,
-    auth_required_example,
-    better_serializer_example,
-    UserViewSet,
-    ProductViewSet
-)
-router = DefaultRouter()
-router.register(r'api/users', UserViewSet, basename='user')
-router.register(r'api/products', ProductViewSet, basename='product')
-urlpatterns += router.urls
-urlpatterns += [
-    path("examples/basic/", basic_example),
-    path("examples/json/", json_example),
-    path("examples/multiple-responses/", multiple_response_types),
-    path("examples/complex-params/", complex_params_example),
-    path("examples/nested-arrays/", nested_arrays_example),
-    path("examples/custom-fields/", custom_serializer_fields),
-    path("examples/auth-required/", auth_required_example),
-    path("examples/better-serializer/", better_serializer_example),
-]
+# #EXAMPLES
+# from .aboba_examples import (
+#     basic_example,
+#     json_example,
+#     multiple_response_types,
+#     complex_params_example,
+#     nested_arrays_example,
+#     custom_serializer_fields,
+#     auth_required_example,
+#     better_serializer_example,
+#     UserViewSet,
+#     ProductViewSet
+# )
+# router = DefaultRouter()
+# router.register(r'api/users', UserViewSet, basename='user')
+# router.register(r'api/products', ProductViewSet, basename='product')
+# urlpatterns += router.urls
+# urlpatterns += [
+#     path("examples/basic/", basic_example),
+#     path("examples/json/", json_example),
+#     path("examples/multiple-responses/", multiple_response_types),
+#     path("examples/complex-params/", complex_params_example),
+#     path("examples/nested-arrays/", nested_arrays_example),
+#     path("examples/custom-fields/", custom_serializer_fields),
+#     path("examples/auth-required/", auth_required_example),
+#     path("examples/better-serializer/", better_serializer_example),
+# ]

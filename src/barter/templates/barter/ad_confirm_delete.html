@@ -1,0 +1,25 @@
+{% extends 'barter/base.html' %}
+
+{% block title %}Удаление объявления{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Удаление объявления</h2>
+            </div>
+            <div class="card-body">
+                <p>Вы уверены, что хотите удалить объявление "{{ object.title }}"?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Да, удалить</button>
+                        <a href="{% url 'barter:ad_detail' object.pk %}" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

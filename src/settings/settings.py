@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "defender",
     "user",
+    "barter",
 ]
 
 MIDDLEWARE = [

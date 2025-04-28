@@ -1,0 +1,30 @@
+{% extends 'barter/base.html' %}
+
+{% block title %}{{ ad.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    {% if ad.image_url %}
+        <img src="{{ ad.image_url }}" class="card-img-top" alt="{{ ad.title }}">
+    {% endif %}
+    <div class="card-body">
+        <h1 class="card-title">{{ ad.title }}</h1>
+        <p class="card-text">{{ ad.description }}</p>
+        <div class="card-text">
+            <p><strong>Категория:</strong> {{ ad.get_category_display }}</p>
+            <p><strong>Состояние:</strong> {{ ad.get_condition_display }}</p>
+            <p><strong>Автор:</strong> {{ ad.user.username }}</p>
+            <p><strong>Дата создания:</strong> {{ ad.created_at|date:"d.m.Y H:i" }}</p>
+        </div>
+        <div class="mt-4">
+            {% if user == ad.user %}
+                <a href="{% url 'barter:ad_update' ad.pk %}" class="btn btn-primary">Редактировать</a>
+                <a href="{% url 'barter:ad_delete' ad.pk %}" class="btn btn-danger">Удалить</a>
+            {% else %}
+                <a href="#" class="btn btn-success">Предложить обмен</a>
+            {% endif %}
+            <a href="{% url 'barter:ad_list' %}" class="btn btn-secondary">Назад к списку</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
