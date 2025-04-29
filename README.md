@@ -1,3 +1,122 @@
+Я сделал этот проект за ночь исходя из моего темплейта для джанго проектов, не судите стого.
+Я не отключил все ненужные функции но думаю это не будет проблемой, лишний контейнер редиса или функционал для создания дампов бд не повлияет на работу тестового задания.
+Так же я использовал языковые модели что можно понять по встречающимся комментариям в коде, не думаю что это плохо так как они удешевляют разработку проектов если уметь ими пользоваться.
+Тем более они дают нечестное приимущество по сравнения с разработкой просто руками.  
+
+
+# Barter System Application
+
+A Django-based platform for exchanging items between users. This application allows users to create listings for items they want to exchange, browse other users' listings, and make exchange proposals.
+
+## Features
+
+- **User Authentication**: Custom token-based authentication system
+- **Ad Management**:
+  - Create ads with title, description, category, condition
+  - Upload images for ads
+  - Edit and delete your own ads
+  - Browse ads from other users
+- **Search & Filtering**:
+  - Search by keywords in title and description
+  - Filter by category and condition
+  - Pagination for better UX
+- **Exchange System**:
+  - Send exchange proposals
+  - Accept or reject proposals
+  - Automatic deactivation of ads after successful exchange
+  - Automatic cancellation of pending proposals after an exchange is accepted
+- **REST API**:
+  - Complete API for all functions
+  - OpenAPI/Swagger documentation
+
+## Technology Stack
+
+- **Python** 3.8+
+- **Django** 4+
+- **PostgreSQL** database
+- **Django REST Framework** for API
+- **drf_spectacular** for API documentation
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd test_barter_system
+```
+
+2. Configure environment variables (create a `.env` file near `.env.sample`):
+
+3. Up docker containers `docker compose up -d --build`
+
+site: http://localhost:8000/
+swagger: http://localhost:8000/swagger/
+admin: http://localhost:8000/admin/
+
+
+## Project Structure
+
+- `src/` - Main project directory
+  - `settings/` - Project settings
+  - `user/` - Custom user model and authentication
+  - `barter/` - Main application with ad and proposal functionality
+    - `models.py` - Database models
+    - `views.py` - Views for web interface and API
+    - `urls.py` - URL routing
+    - `serializers.py` - API serializers
+    - `templates/` - HTML templates
+    - `tests.py` - Test suite
+
+## Usage
+
+### Web Interface
+
+1. Register or log in to your account
+2. Create ads for items you want to exchange
+3. Browse other users' ads
+4. Send exchange proposals
+5. Manage your proposals (accept/reject)
+6. View your active ads and exchange history
+
+### API Endpoints
+
+The REST API provides endpoints for:
+
+- Ad management (CRUD operations)
+- Proposal creation and management
+- User authentication
+- Search and filtering
+
+API documentation is available at `/api/schema/swagger-ui/` when the server is running.
+
+## Implementation Details
+
+This project implements:
+- User registration and authentication
+- JWT tokens
+- Custom user model
+- Dual authentication via cookies and bearer tokens (bearer tokens checked first when both are enabled)
+- Complete ad management system
+- Exchange proposal workflow with status updates
+- Advanced filtering and search functionality
+
+## Testing
+
+Run the test suite with:
+
+```bash
+python src/manage.py test
+```
+
+The project includes comprehensive tests for:
+- Model validation
+- View functionality
+- API endpoints
+- Authentication
+- Business logic (exchange process)
+
+
+# А это описание моего темплейта с которого я писал этот проект, я подумал а почему бы его тут не оставить)
 ## В этом примере реализованы:
  - Регистрация, jwt токены, кастомная модель юзера, авторизация через cookie и bearer (Если в конфиге включены оба то bearer проверяется первый)
  - Регистрация и авторизация через телеграмм приложение с проверкой тг хэша
