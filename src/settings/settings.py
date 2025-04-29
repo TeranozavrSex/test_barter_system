@@ -16,7 +16,12 @@ DEBUG = bool(int(os.getenv("DEBUG", "0")))
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-)hnv^!s8u=1f_yns=co5ho7d&)s@x=2=gxdf^*@n3m5hct7z(^" if DEBUG else "")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-)hnv^!s8u=1f_yns=co5ho7d&)s@x=2=gxdf^*@n3m5hct7z(^"
+    if DEBUG
+    else "",
+)
 
 if not SECRET_KEY and not DEBUG:
     raise ValueError("SECRET_KEY environment variable is not set in production mode")
@@ -128,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
         "OPTIONS": {
             "min_length": 10,  # Stronger password length requirement
-        }
+        },
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -160,8 +165,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TOKEN_SETTINGS = {
     "NAME": "token",
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("ACCESS_TOKEN_LIFETIME_MINUTES", "1440"))),
-    "TOTAL_ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("TOTAL_ACCESS_TOKEN_LIFETIME_MINUTES", "2880"))),
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=int(os.getenv("ACCESS_TOKEN_LIFETIME_MINUTES", "1440"))
+    ),
+    "TOTAL_ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=int(os.getenv("TOTAL_ACCESS_TOKEN_LIFETIME_MINUTES", "2880"))
+    ),
     "ACCESS_COOKIE_HTTP_ONLY": True,  # Changed to True for security
     "ACCESS_COOKIE_SECURE": not DEBUG,  # Secure in production
     "ACCESS_COOKIE_SAMESITE": "Lax",  # Added SameSite policy
@@ -211,11 +220,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {
-            "handlers": ["file", "console"],
-            "level": "INFO",
-            "propagate": True
-        },
+        "django": {"handlers": ["file", "console"], "level": "INFO", "propagate": True},
         "django.server": {
             "handlers": ["file", "console"],
             "level": "INFO",
@@ -244,7 +249,9 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+    CORS_ALLOWED_ORIGINS = os.getenv(
+        "CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
+    ).split(",")
 
 CORS_ALLOW_CREDENTIALS = True
 

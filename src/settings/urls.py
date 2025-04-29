@@ -1,17 +1,14 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework.routers import DefaultRouter
 
 from .views import healthcheck, log_error
 
-
 # Configure error handlers
-handler404 = 'settings.views.handle_404'
-handler500 = 'settings.views.handle_500'
+handler404 = "settings.views.handle_404"
+handler500 = "settings.views.handle_500"
 
 urlpatterns = [
     path("admin/defender/", include("defender.urls")),
@@ -23,10 +20,9 @@ urlpatterns = [
         name="swagger",
     ),
     path("healthcheck/", healthcheck),
-    
     path("log_error/", log_error),
-    path('api/', include('user.urls')),
-    path('', include('barter.urls')),
+    path("api/", include("user.urls")),
+    path("", include("barter.urls")),
 ]
 
 # Serve static files in development

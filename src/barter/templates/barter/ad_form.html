@@ -3,14 +3,14 @@
 {% block content %}
 <div class="container mt-4">
     <h2>{% if form.instance.pk %}Редактирование объявления{% else %}Создание объявления{% endif %}</h2>
-    
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        
+
         {% for field in form %}
             <div class="form-group mb-3">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                
+
                 {% if field.name == 'image' %}
                     <div class="mb-3">
                         {% if form.instance.image %}
@@ -24,7 +24,7 @@
                 {% else %}
                     {{ field }}
                 {% endif %}
-                
+
                 {% if field.help_text %}
                     <small class="form-text text-muted">{{ field.help_text }}</small>
                 {% endif %}
@@ -35,7 +35,7 @@
                 {% endif %}
             </div>
         {% endfor %}
-        
+
         <div class="form-group">
             <button type="submit" class="btn btn-primary">
                 {% if form.instance.pk %}Сохранить{% else %}Создать{% endif %}
@@ -44,4 +44,4 @@
         </div>
     </form>
 </div>
-{% endblock %} 
+{% endblock %}

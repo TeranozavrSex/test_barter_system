@@ -1,9 +1,8 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework import serializers
-from rest_framework import viewsets, status
+from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from settings.aboba_swagger import aboba_swagger
 
@@ -12,9 +11,7 @@ from settings.aboba_swagger import aboba_swagger
     http_methods=["GET"],
     summary="Basic example with simple response",
     description="This is a basic example showing a simple string response",
-    responses={
-        "200": "Simple string response"
-    },
+    responses={"200": "Simple string response"},
     tags=["examples"],
 )
 def basic_example(request):
@@ -25,9 +22,7 @@ def basic_example(request):
     http_methods=["GET"],
     summary="Example with JSON response",
     description="This example returns a simple JSON object",
-    responses={
-        "200": {"response": {"message": "Success", "data": 123}}
-    },
+    responses={"200": {"response": {"message": "Success", "data": 123}}},
     tags=["examples"],
 )
 def json_example(request):
@@ -41,13 +36,14 @@ def json_example(request):
     responses={
         "200": {
             "String Response": "Simple string success",
-            "JSON Response": {"status": "success", "code": 200}
+            "JSON Response": {"status": "success", "code": 200},
         }
     },
     tags=["examples"],
 )
 def multiple_response_types(request):
     import random
+
     if random.choice([True, False]):
         return HttpResponse("Simple string success", status=200)
     else:
@@ -71,14 +67,14 @@ def multiple_response_types(request):
             "tags": [str],
             "created_at": "datetime",
             "priority": int,
-        }
+        },
     },
     responses={
         "200": {"id": 123, "name": "Test User", "created": True},
         "400": {
             "Missing Field": {"error": "Field 'name' is required"},
-            "Invalid Value": {"error": "Field 'age' must be positive"}
-        }
+            "Invalid Value": {"error": "Field 'age' must be positive"},
+        },
     },
     tags=["examples"],
 )
@@ -91,24 +87,22 @@ def complex_params_example(request):
     summary="Example with nested arrays in response",
     description="This example shows how to document responses with nested arrays",
     responses={
-        "200": {"response": {
-            "users": [
-                {
-                    "id": 1,
-                    "name": "User 1",
-                    "roles": ["admin", "editor"],
-                    "permissions": [
-                        {"resource": "articles", "actions": ["read", "write"]},
-                        {"resource": "comments", "actions": ["read"]}
-                    ]
-                }
-            ],
-            "meta": {
-                "total": 100,
-                "page": 1,
-                "limit": 10
+        "200": {
+            "response": {
+                "users": [
+                    {
+                        "id": 1,
+                        "name": "User 1",
+                        "roles": ["admin", "editor"],
+                        "permissions": [
+                            {"resource": "articles", "actions": ["read", "write"]},
+                            {"resource": "comments", "actions": ["read"]},
+                        ],
+                    }
+                ],
+                "meta": {"total": 100, "page": 1, "limit": 10},
             }
-        }}
+        }
     },
     tags=["examples"],
 )
@@ -121,15 +115,11 @@ def nested_arrays_example(request):
                 "roles": ["admin", "editor"],
                 "permissions": [
                     {"resource": "articles", "actions": ["read", "write"]},
-                    {"resource": "comments", "actions": ["read"]}
-                ]
+                    {"resource": "comments", "actions": ["read"]},
+                ],
             }
         ],
-        "meta": {
-            "total": 100,
-            "page": 1,
-            "limit": 10
-        }
+        "meta": {"total": 100, "page": 1, "limit": 10},
     }
     return JsonResponse(data, status=200)
 
@@ -154,7 +144,7 @@ def nested_arrays_example(request):
                 "created_at": "2023-07-25T12:34:56Z",
                 "updated_at": "2023-07-25T12:34:56Z",
                 "amount": "123.45",
-            }
+            },
         }
     },
     tags=["examples"],
@@ -162,23 +152,23 @@ def nested_arrays_example(request):
 def custom_serializer_fields(request):
     from datetime import datetime
     from decimal import Decimal
-    
-    return JsonResponse({
-        "id": 123,
-        "created_at": datetime.now().isoformat(),
-        "updated_at": "2023-07-25T12:34:56Z",
-        "amount": str(Decimal("123.45")),
-    }, status=200)
+
+    return JsonResponse(
+        {
+            "id": 123,
+            "created_at": datetime.now().isoformat(),
+            "updated_at": "2023-07-25T12:34:56Z",
+            "amount": str(Decimal("123.45")),
+        },
+        status=200,
+    )
 
 
 @aboba_swagger(
     http_methods=["GET"],
     summary="Example with auth required",
     description="This example shows how to require authentication",
-    responses={
-        "200": "You are authenticated",
-        "401": "Authentication required"
-    },
+    responses={"200": "You are authenticated", "401": "Authentication required"},
     need_auth=True,
     tags=["examples"],
 )
@@ -203,24 +193,21 @@ def auth_required_example(request):
                 "name": "John Doe",
                 "email": "john@example.com",
                 "created_at": "2023-08-15T14:30:45Z",
-                "profile": {
-                    "age": 30,
-                    "is_active": True
-                }
+                "profile": {"age": 30, "is_active": True},
             }
         },
         "400": {
             "Invalid Email": {
                 "error": "Invalid email format",
                 "field": "email",
-                "code": "invalid_format"
+                "code": "invalid_format",
             },
             "Missing Fields": {
                 "error": "Required fields missing",
                 "fields": ["name", "email"],
-                "code": "required_fields"
-            }
-        }
+                "code": "required_fields",
+            },
+        },
     },
     tags=["examples"],
 )
@@ -230,19 +217,19 @@ def better_serializer_example(request):
     without directly using serializer fields in the responses dictionary.
     """
     from datetime import datetime
-    
+
     # Normally we would process the request.data here
     # For this example, we just return a predefined response
-    return JsonResponse({
-        "id": 42,
-        "name": "John Doe",
-        "email": "john@example.com",
-        "created_at": datetime.now().isoformat(),
-        "profile": {
-            "age": 30,
-            "is_active": True
-        }
-    }, status=201)
+    return JsonResponse(
+        {
+            "id": 42,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "created_at": datetime.now().isoformat(),
+            "profile": {"age": 30, "is_active": True},
+        },
+        status=201,
+    )
 
 
 # Example serializers
@@ -262,17 +249,19 @@ class UserCreateSerializer(serializers.Serializer):
 # Paginator example
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100
-    
+
     def get_paginated_response(self, data):
         """Override to make the response structure consistent"""
-        return Response({
-            'count': self.page.paginator.count,
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'results': data
-        })
+        return Response(
+            {
+                "count": self.page.paginator.count,
+                "next": self.get_next_link(),
+                "previous": self.get_previous_link(),
+                "results": data,
+            }
+        )
 
 
 # Mock data generation
@@ -280,12 +269,14 @@ def generate_mock_users(count=20):
     """Generate a list of mock users"""
     users = []
     for i in range(1, count + 1):
-        users.append({
-            "id": i,
-            "username": f"user{i}",
-            "email": f"user{i}@example.com",
-            "is_active": i % 3 != 0,  # Every third user is inactive
-        })
+        users.append(
+            {
+                "id": i,
+                "username": f"user{i}",
+                "email": f"user{i}@example.com",
+                "is_active": i % 3 != 0,  # Every third user is inactive
+            }
+        )
     return users
 
 
@@ -295,14 +286,16 @@ def generate_mock_products(count=30):
     categories = ["Electronics", "Clothing", "Books", "Home", "Sports"]
     for i in range(1, count + 1):
         category = categories[i % len(categories)]
-        products.append({
-            "id": i,
-            "name": f"Product {i}",
-            "price": f"{(i * 9.99):.2f}",
-            "description": f"Description of product {i} in {category} category",
-            "category": category,
-            "is_available": i % 4 != 0,  # Every fourth product is unavailable
-        })
+        products.append(
+            {
+                "id": i,
+                "name": f"Product {i}",
+                "price": f"{(i * 9.99):.2f}",
+                "description": f"Description of product {i} in {category} category",
+                "category": category,
+                "is_available": i % 4 != 0,  # Every fourth product is unavailable
+            }
+        )
     return products
 
 
@@ -333,8 +326,9 @@ class UserViewSet(viewsets.ViewSet):
     """
     A viewset for managing users with aboba_swagger decorators.
     """
+
     pagination_class = StandardResultsSetPagination
-    
+
     @aboba_swagger(
         summary="List all users",
         description="Returns a paginated list of all users in the system",
@@ -358,7 +352,7 @@ class UserViewSet(viewsets.ViewSet):
                             "is_active": True,
                         },
                         # More users would be listed here
-                    ]
+                    ],
                 }
             }
         },
@@ -371,24 +365,28 @@ class UserViewSet(viewsets.ViewSet):
         """
         # Filter mock data based on query parameters
         users = MOCK_USERS.copy()
-        active_only = request.query_params.get('active_only')
-        search = request.query_params.get('search')
-        
-        if active_only and active_only.lower() == 'true':
-            users = [user for user in users if user['is_active']]
-            
+        active_only = request.query_params.get("active_only")
+        search = request.query_params.get("search")
+
+        if active_only and active_only.lower() == "true":
+            users = [user for user in users if user["is_active"]]
+
         if search:
-            users = [user for user in users if search.lower() in user['username'].lower() 
-                     or search.lower() in user['email'].lower()]
-        
+            users = [
+                user
+                for user in users
+                if search.lower() in user["username"].lower()
+                or search.lower() in user["email"].lower()
+            ]
+
         # Use serializer to validate and format the data
         serializer = UserSerializer(data=users, many=True)
         serializer.is_valid()  # We know our mock data is valid
-        
+
         # Use the paginator
         paginator = self.pagination_class()
         paginated_users = paginator.paginate_queryset(serializer.data, request)
-        
+
         return paginator.get_paginated_response(paginated_users)
 
     @aboba_swagger(
@@ -403,7 +401,7 @@ class UserViewSet(viewsets.ViewSet):
                     "is_active": True,
                 }
             },
-            "404": {"Not Found": {"detail": "User not found"}}
+            "404": {"Not Found": {"detail": "User not found"}},
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -420,9 +418,13 @@ class UserViewSet(viewsets.ViewSet):
                 serializer = UserSerializer(data=user)
                 serializer.is_valid()  # We know our mock data is valid
                 return Response(serializer.data)
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         summary="Create a new user",
@@ -446,7 +448,7 @@ class UserViewSet(viewsets.ViewSet):
                     "username": ["This field is required."],
                     "email": ["Enter a valid email address."],
                 }
-            }
+            },
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -487,7 +489,7 @@ class UserViewSet(viewsets.ViewSet):
                     "is_active": True,
                 }
             },
-            "404": {"Not Found": {"detail": "User not found"}}
+            "404": {"Not Found": {"detail": "User not found"}},
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -500,13 +502,15 @@ class UserViewSet(viewsets.ViewSet):
             pk = int(pk)
             user = next((user for user in MOCK_USERS if user["id"] == pk), None)
             if not user:
-                return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-                
+                return Response(
+                    {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+
             # Use serializer to validate incoming data
             serializer = UserSerializer(data=request.data, partial=True)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
+
             # Update the user data
             updated_user = {
                 "id": user["id"],
@@ -514,20 +518,22 @@ class UserViewSet(viewsets.ViewSet):
                 "email": request.data.get("email", user["email"]),
                 "is_active": request.data.get("is_active", user["is_active"]),
             }
-            
+
             # Use serializer for response
             response_serializer = UserSerializer(data=updated_user)
             response_serializer.is_valid()
             return Response(response_serializer.data)
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         summary="Delete a user",
         description="Deletes a user from the system",
         responses={
             "204": "User deleted successfully",
-            "404": {"Not Found": {"detail": "User not found"}}
+            "404": {"Not Found": {"detail": "User not found"}},
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -541,9 +547,13 @@ class UserViewSet(viewsets.ViewSet):
             user = next((user for user in MOCK_USERS if user["id"] == pk), None)
             if user:
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         http_methods=["POST"],
@@ -551,7 +561,7 @@ class UserViewSet(viewsets.ViewSet):
         description="Activates a deactivated user account",
         responses={
             "200": {"User Activated": {"detail": "User activated successfully"}},
-            "404": {"Not Found": {"detail": "User not found"}}
+            "404": {"Not Found": {"detail": "User not found"}},
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -568,9 +578,13 @@ class UserViewSet(viewsets.ViewSet):
                 if not user["is_active"]:
                     return Response({"detail": "User activated successfully"})
                 return Response({"detail": "User is already active"})
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         http_methods=["POST"],
@@ -579,7 +593,7 @@ class UserViewSet(viewsets.ViewSet):
         body_params={"email": str},
         responses={
             "200": {"Success": {"detail": "Password reset email sent"}},
-            "404": {"Not Found": {"detail": "User with this email not found"}}
+            "404": {"Not Found": {"detail": "User with this email not found"}},
         },
         is_drf=True,
         tags=["drf_example_users"],
@@ -594,8 +608,8 @@ class UserViewSet(viewsets.ViewSet):
         if user:
             return Response({"detail": "Password reset email sent"})
         return Response(
-            {"detail": "User with this email not found"}, 
-            status=status.HTTP_404_NOT_FOUND
+            {"detail": "User with this email not found"},
+            status=status.HTTP_404_NOT_FOUND,
         )
 
 
@@ -603,8 +617,9 @@ class ProductViewSet(viewsets.ViewSet):
     """
     A viewset for managing products with aboba_swagger decorators.
     """
+
     pagination_class = StandardResultsSetPagination
-    
+
     @aboba_swagger(
         summary="List all products",
         description="Returns a paginated list of all products in the system",
@@ -632,7 +647,7 @@ class ProductViewSet(viewsets.ViewSet):
                             "is_available": True,
                         },
                         # More products would be listed here
-                    ]
+                    ],
                 }
             }
         },
@@ -645,40 +660,42 @@ class ProductViewSet(viewsets.ViewSet):
         """
         # Filter products based on query parameters
         products = MOCK_PRODUCTS.copy()
-        
-        category = request.query_params.get('category')
-        min_price = request.query_params.get('min_price')
-        max_price = request.query_params.get('max_price')
-        available_only = request.query_params.get('available_only')
-        
+
+        category = request.query_params.get("category")
+        min_price = request.query_params.get("min_price")
+        max_price = request.query_params.get("max_price")
+        available_only = request.query_params.get("available_only")
+
         if category:
-            products = [p for p in products if p['category'].lower() == category.lower()]
-            
+            products = [
+                p for p in products if p["category"].lower() == category.lower()
+            ]
+
         if min_price:
             try:
                 min_price = float(min_price)
-                products = [p for p in products if float(p['price']) >= min_price]
+                products = [p for p in products if float(p["price"]) >= min_price]
             except ValueError:
                 pass
-                
+
         if max_price:
             try:
                 max_price = float(max_price)
-                products = [p for p in products if float(p['price']) <= max_price]
+                products = [p for p in products if float(p["price"]) <= max_price]
             except ValueError:
                 pass
-                
-        if available_only and available_only.lower() == 'true':
-            products = [p for p in products if p['is_available']]
-        
+
+        if available_only and available_only.lower() == "true":
+            products = [p for p in products if p["is_available"]]
+
         # Use serializer to validate and format the data
         serializer = ProductSerializer(data=products, many=True)
         serializer.is_valid()  # We know our mock data is valid
-        
+
         # Use the paginator
         paginator = self.pagination_class()
         paginated_products = paginator.paginate_queryset(serializer.data, request)
-        
+
         return paginator.get_paginated_response(paginated_products)
 
     @aboba_swagger(
@@ -695,7 +712,7 @@ class ProductViewSet(viewsets.ViewSet):
                     "is_available": True,
                 }
             },
-            "404": {"Not Found": {"detail": "Product not found"}}
+            "404": {"Not Found": {"detail": "Product not found"}},
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -712,9 +729,13 @@ class ProductViewSet(viewsets.ViewSet):
                 serializer = ProductSerializer(data=product)
                 serializer.is_valid()
                 return Response(serializer.data)
-            return Response({"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         http_methods=["GET"],
@@ -738,7 +759,7 @@ class ProductViewSet(viewsets.ViewSet):
                         "description": "Description of product 5 in Electronics category",
                         "category": "Electronics",
                         "is_available": True,
-                    }
+                    },
                 ]
             }
         },
@@ -752,11 +773,11 @@ class ProductViewSet(viewsets.ViewSet):
         """
         # For this example, we'll just pick a few products as featured
         featured_products = [p for p in MOCK_PRODUCTS if p["id"] in [1, 5, 10, 15, 20]]
-        
+
         # Use serializer to format the data
         serializer = ProductSerializer(data=featured_products, many=True)
         serializer.is_valid()  # We know our mock data is valid
-        
+
         return Response(serializer.data)
 
     @aboba_swagger(
@@ -779,10 +800,10 @@ class ProductViewSet(viewsets.ViewSet):
                         "rating": 4,
                         "comment": "Good product",
                         "created_at": "2023-08-16T09:15:20Z",
-                    }
+                    },
                 ]
             },
-            "404": {"Not Found": {"detail": "Product not found"}}
+            "404": {"Not Found": {"detail": "Product not found"}},
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -796,47 +817,53 @@ class ProductViewSet(viewsets.ViewSet):
             pk = int(pk)
             product = next((p for p in MOCK_PRODUCTS if p["id"] == pk), None)
             if not product:
-                return Response({"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-                
+                return Response(
+                    {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+
             # Generate mock reviews based on product ID
             from datetime import datetime, timedelta
-            
+
             base_date = datetime.now()
-            
+
             mock_reviews = [
                 {
                     "id": 1,
                     "user": f"user{pk * 2 - 1}",
                     "rating": min(5, (pk % 5) + 3),
                     "comment": "Great product! Would buy again.",
-                    "created_at": (base_date - timedelta(days=5)).isoformat()
+                    "created_at": (base_date - timedelta(days=5)).isoformat(),
                 },
                 {
                     "id": 2,
                     "user": f"user{pk * 2}",
                     "rating": max(1, 5 - (pk % 3)),
                     "comment": "Good value for money.",
-                    "created_at": (base_date - timedelta(days=2)).isoformat()
-                }
+                    "created_at": (base_date - timedelta(days=2)).isoformat(),
+                },
             ]
-            
+
             # Add a third review for some products
             if pk % 3 == 0:
-                mock_reviews.append({
-                    "id": 3,
-                    "user": f"user{pk + 5}",
-                    "rating": 3,
-                    "comment": "Average product, nothing special.",
-                    "created_at": (base_date - timedelta(days=1)).isoformat()
-                })
-                
+                mock_reviews.append(
+                    {
+                        "id": 3,
+                        "user": f"user{pk + 5}",
+                        "rating": 3,
+                        "comment": "Average product, nothing special.",
+                        "created_at": (base_date - timedelta(days=1)).isoformat(),
+                    }
+                )
+
             # Use ReviewSerializer to validate and format the data
             serializer = ReviewSerializer(data=mock_reviews, many=True)
             serializer.is_valid()
-            
+
             return Response(serializer.data)
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         http_methods=["POST"],
@@ -856,8 +883,10 @@ class ProductViewSet(viewsets.ViewSet):
                     "created_at": "2023-08-15T14:30:45Z",
                 }
             },
-            "400": {"Validation Error": {"rating": ["Rating must be between 1 and 5."]}},
-            "404": {"Not Found": {"detail": "Product not found"}}
+            "400": {
+                "Validation Error": {"rating": ["Rating must be between 1 and 5."]}
+            },
+            "404": {"Not Found": {"detail": "Product not found"}},
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -871,24 +900,30 @@ class ProductViewSet(viewsets.ViewSet):
             pk = int(pk)
             product = next((p for p in MOCK_PRODUCTS if p["id"] == pk), None)
             if not product:
-                return Response({"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-            
+                return Response(
+                    {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+
             # Use ReviewSerializer to validate incoming data
-            serializer = ReviewSerializer(data={
-                "id": 3,  # This would normally be assigned by the database
-                "user": "current_user",  # This would normally come from the authentication
-                "rating": request.data.get("rating"),
-                "comment": request.data.get("comment"),
-                "created_at": datetime.now().isoformat()
-            })
-            
+            serializer = ReviewSerializer(
+                data={
+                    "id": 3,  # This would normally be assigned by the database
+                    "user": "current_user",  # This would normally come from the authentication
+                    "rating": request.data.get("rating"),
+                    "comment": request.data.get("comment"),
+                    # "created_at": datetime.now().isoformat(),
+                }
+            )
+
             if serializer.is_valid():
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
+
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         summary="Create a new product",
@@ -916,7 +951,7 @@ class ProductViewSet(viewsets.ViewSet):
                     "name": ["This field is required."],
                     "price": ["A valid number is required."],
                 }
-            }
+            },
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -930,13 +965,13 @@ class ProductViewSet(viewsets.ViewSet):
             # Simulate creating a new product
             new_product_data = {
                 "id": len(MOCK_PRODUCTS) + 1,
-                **serializer.validated_data
+                **serializer.validated_data,
             }
-            
+
             # Create a response using the same serializer
             response_serializer = ProductSerializer(data=new_product_data)
             response_serializer.is_valid()
-            
+
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -961,7 +996,7 @@ class ProductViewSet(viewsets.ViewSet):
                     "is_available": True,
                 }
             },
-            "404": {"Not Found": {"detail": "Product not found"}}
+            "404": {"Not Found": {"detail": "Product not found"}},
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -974,13 +1009,15 @@ class ProductViewSet(viewsets.ViewSet):
             pk = int(pk)
             product = next((p for p in MOCK_PRODUCTS if p["id"] == pk), None)
             if not product:
-                return Response({"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-                
+                return Response(
+                    {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+
             # Validate incoming data with ProductSerializer
             serializer = ProductSerializer(data=request.data, partial=True)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
+
             # Update product with validated data
             updated_product = {
                 "id": product["id"],
@@ -988,23 +1025,27 @@ class ProductViewSet(viewsets.ViewSet):
                 "price": request.data.get("price", product["price"]),
                 "description": request.data.get("description", product["description"]),
                 "category": request.data.get("category", product["category"]),
-                "is_available": request.data.get("is_available", product["is_available"]),
+                "is_available": request.data.get(
+                    "is_available", product["is_available"]
+                ),
             }
-            
+
             # Use serializer for response formatting
             response_serializer = ProductSerializer(data=updated_product)
             response_serializer.is_valid()
-            
+
             return Response(response_serializer.data)
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
     @aboba_swagger(
         summary="Delete a product",
         description="Deletes a product from the system",
         responses={
             "204": "Product deleted successfully",
-            "404": {"Not Found": {"detail": "Product not found"}}
+            "404": {"Not Found": {"detail": "Product not found"}},
         },
         is_drf=True,
         tags=["drf_example_products"],
@@ -1018,6 +1059,10 @@ class ProductViewSet(viewsets.ViewSet):
             product = next((p for p in MOCK_PRODUCTS if p["id"] == pk), None)
             if product:
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         except (ValueError, TypeError):
-            return Response({"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST) 
+            return Response(
+                {"detail": "Invalid product ID"}, status=status.HTTP_400_BAD_REQUEST
+            )

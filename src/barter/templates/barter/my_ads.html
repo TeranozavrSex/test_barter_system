@@ -8,7 +8,7 @@
         <h2>Мои объявления</h2>
         <a href="{% url 'barter:ad_create' %}" class="btn btn-primary">Создать новое объявление</a>
     </div>
-    
+
     {% if ads %}
         <div class="row">
             {% for ad in ads %}
@@ -54,4 +54,4 @@
         </div>
     {% endif %}
 </div>
-{% endblock %} 
+{% endblock %}

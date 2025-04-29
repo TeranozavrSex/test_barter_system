@@ -6,17 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('barter', '0001_initial'),
+        ("barter", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ad',
-            name='image_url',
+            model_name="ad",
+            name="image_url",
         ),
         migrations.AddField(
-            model_name='ad',
-            name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='ads_images', verbose_name='Изображение'),
+            model_name="ad",
+            name="image",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to="ads_images",
+                verbose_name="Изображение",
+            ),
         ),
     ]

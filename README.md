@@ -1,7 +1,7 @@
 Я сделал этот проект за ночь исходя из моего темплейта для джанго проектов, не судите стого.
 Я не отключил все ненужные функции но думаю это не будет проблемой, лишний контейнер редиса или функционал для создания дампов бд не повлияет на работу тестового задания.
 Так же я использовал языковые модели что можно понять по встречающимся комментариям в коде, не думаю что это плохо так как они удешевляют разработку проектов если уметь ими пользоваться.
-Тем более они дают нечестное приимущество по сравнения с разработкой просто руками.  
+Тем более они дают нечестное приимущество по сравнения с разработкой просто руками.
 
 
 # Barter System Application
@@ -87,7 +87,7 @@ The REST API provides endpoints for:
 - User authentication
 - Search and filtering
 
-API documentation is available at `/api/schema/swagger-ui/` when the server is running.
+API documentation is available at `/swagger/` when the server is running.
 
 ## Implementation Details
 
@@ -105,7 +105,7 @@ This project implements:
 Run the test suite with:
 
 ```bash
-python src/manage.py test
+docker exec -it barter-backend poetry run ./src/manage.py test barter
 ```
 
 The project includes comprehensive tests for:

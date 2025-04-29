@@ -21,8 +21,8 @@
                         <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">Email</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input type="email" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" 
-                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                            <input type="email" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}"
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}"
                                    placeholder="Введите ваш email" required>
                         </div>
                         {% if form.username.errors %}
@@ -38,8 +38,8 @@
                         <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">Пароль</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" 
-                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                            <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}"
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}"
                                    placeholder="Введите ваш пароль" required>
                         </div>
                         {% if form.password.errors %}
@@ -97,4 +97,4 @@
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-{% endblock %} 
+{% endblock %}

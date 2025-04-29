@@ -1,7 +1,7 @@
 # https://drf-spectacular.readthedocs.io/en/latest/drf_spectacular.html#drf_spectacular.utils.extend_schema
 import hashlib
 from functools import wraps
-from typing import Any, Dict, List, Union, Optional, Type
+from typing import Any, Dict, List
 
 from django.http import HttpResponse
 
@@ -179,7 +179,7 @@ def aboba_swagger(
         # Тут обрабатываем ключи в body
         for param_key in body_params.keys():
             param_value = body_params[param_key]
-            
+
             # Check if it's a basic type in our dictionary
             if isinstance(param_value, type) and param_value in TYPES_SERIALIZERS_DICT:
                 body_parameters[param_key] = TYPES_SERIALIZERS_DICT[param_value]()
@@ -225,7 +225,9 @@ def aboba_swagger(
             description = f"Эта ручка требует авторизации \n\n {description}"
             responses["401"] = {"Unauthorized": "Unauthorized"}
 
-        formated_responses = build_openapi_responses(responses_dict=responses, handler_name=function.__name__)
+        formated_responses = build_openapi_responses(
+            responses_dict=responses, handler_name=function.__name__
+        )
 
         if not is_drf:
 
@@ -336,13 +338,13 @@ def parse_value_to_field(value):
     # Handle None values
     if value is None:
         return serializers.CharField(allow_null=True, required=False)
-        
+
     # Handle type references (str, int, etc.)
     if isinstance(value, type):
         if value in TYPES_SERIALIZERS_DICT:
             return TYPES_SERIALIZERS_DICT[value]()
         return serializers.CharField()
-    
+
     # Handle string type references as strings
     if isinstance(value, str):
         # Try to interpret as a type reference
@@ -359,44 +361,44 @@ def parse_value_to_field(value):
             return type_mapping[value]
         # Otherwise treat as a string value
         return serializers.CharField(default=value)
-    
+
     # Handle dictionaries - create a nested serializer
     if isinstance(value, dict):
         fields = {}
         for k, v in value.items():
             fields[k] = parse_value_to_field(v)
-        
+
         # Generate a unique name for the serializer based on content hash
         dict_str = str(sorted(value.items()))
         name = f"Nested_{hashlib.md5(dict_str.encode()).hexdigest()[:8]}"
-        
+
         return inline_serializer(name=name, fields=fields)
-    
+
     # Handle lists - create a list field with appropriate child
     if isinstance(value, list):
         if not value:  # Empty list
-            return serializers.ListField(child=serializers.CharField(allow_null=True, required=False))
-            
+            return serializers.ListField(
+                child=serializers.CharField(allow_null=True, required=False)
+            )
+
         # If all items are of the same type, use that type for the child
         if all(isinstance(item, type(value[0])) for item in value):
             child = parse_value_to_field(value[0])
             return serializers.ListField(child=child)
-            
+
         # Mixed types - use a generic serializer that can handle any type
-        return serializers.ListField(
-            child=serializers.JSONField()
-        )
-    
+        return serializers.ListField(child=serializers.JSONField())
+
     # Handle basic types
     if isinstance(value, bool):
         return serializers.BooleanField(default=value)
-    
+
     if isinstance(value, int):
         return serializers.IntegerField(default=value)
-    
+
     if isinstance(value, float):
         return serializers.FloatField(default=value)
-    
+
     # Default to CharField for everything else
     return serializers.CharField(default=str(value))
 
@@ -404,35 +406,44 @@ def parse_value_to_field(value):
 def build_openapi_responses(responses_dict: dict, handler_name) -> dict:
     """
     Создает OpenAPI-совместимое описание ответов на основе словаря ответов.
-    
+
     Args:
         responses_dict: Словарь с кодами ответов и их примерами.
         handler_name: Имя обработчика, используется для генерации уникальных имен.
-        
+
     Returns:
         Словарь OpenAPI-совместимых объектов для описания ответов.
     """
     openapi_responses = {}
-    
+
     for status_code, response_data in responses_dict.items():
         # Нормализуем данные ответа в словарь, если это еще не словарь
         if not isinstance(response_data, dict):
             # Handle JSON string
-            if isinstance(response_data, str) and response_data.strip().startswith('{') and response_data.strip().endswith('}'):
+            if (
+                isinstance(response_data, str)
+                and response_data.strip().startswith("{")
+                and response_data.strip().endswith("}")
+            ):
                 import json
+
                 try:
-                    response_data = {f"Response {status_code}": json.loads(response_data)}
+                    response_data = {
+                        f"Response {status_code}": json.loads(response_data)
+                    }
                 except json.JSONDecodeError:
                     response_data = {f"Response {status_code}": response_data}
             else:
                 response_data = {f"Response {status_code}": response_data}
-        
+
         # Clean examples by converting serializer fields to their string representation or default values
         cleaned_examples = {}
         for example_name, example_value in response_data.items():
             if isinstance(example_value, serializers.Field):
                 # Convert serializer fields to a suitable default value
-                cleaned_examples[example_name] = _get_serializer_default_value(example_value)
+                cleaned_examples[example_name] = _get_serializer_default_value(
+                    example_value
+                )
             elif isinstance(example_value, dict):
                 # Process nested dictionaries
                 cleaned_dict = {}
@@ -444,7 +455,7 @@ def build_openapi_responses(responses_dict: dict, handler_name) -> dict:
                 cleaned_examples[example_name] = cleaned_dict
             else:
                 cleaned_examples[example_name] = example_value
-        
+
         # Создаем список примеров для каждого варианта ответа
         examples_list = []
         for example_name, example_value in cleaned_examples.items():
@@ -456,14 +467,20 @@ def build_openapi_responses(responses_dict: dict, handler_name) -> dict:
                     status_codes=[str(status_code)],
                 )
             )
-        
+
         # Определяем схему ответа
         # Сначала пробуем создать унифицированную схему для всех примеров
         all_examples_values = list(cleaned_examples.values())
-        
+
         # Если все значения одного типа и это не словари, используем простой тип
-        if all_examples_values and all(not isinstance(val, dict) for val in all_examples_values) and \
-           all(isinstance(val, type(all_examples_values[0])) for val in all_examples_values):
+        if (
+            all_examples_values
+            and all(not isinstance(val, dict) for val in all_examples_values)
+            and all(
+                isinstance(val, type(all_examples_values[0]))
+                for val in all_examples_values
+            )
+        ):
             response_schema = type(all_examples_values[0])
         # Если хотя бы один пример - словарь, создаем объединенную схему
         elif any(isinstance(val, dict) for val in all_examples_values):
@@ -476,14 +493,16 @@ def build_openapi_responses(responses_dict: dict, handler_name) -> dict:
                         if key in merged_fields:
                             # Если типы разные, используем JSONField
                             if type(val) != type(merged_fields[key]):
-                                merged_fields[key] = parse_value_to_field(None)  # Используем общий тип
+                                merged_fields[key] = parse_value_to_field(
+                                    None
+                                )  # Используем общий тип
                         else:
                             merged_fields[key] = parse_value_to_field(val)
-            
+
             # Создаем инлайн-сериализатор с объединенными полями
             response_schema = inline_serializer(
                 name=f"Response{status_code}_{handler_name}_{hashlib.md5(str(merged_fields).encode()).hexdigest()[:8]}",
-                fields=merged_fields
+                fields=merged_fields,
             )
         # Для строк и других простых типов
         else:
@@ -494,14 +513,14 @@ def build_openapi_responses(responses_dict: dict, handler_name) -> dict:
             else:
                 # Если примеры отсутствуют, используем строку
                 response_schema = serializers.CharField()
-        
+
         # Создаем объект ответа OpenAPI
         openapi_responses[status_code] = OpenApiResponse(
             response=response_schema,
             examples=examples_list,
-            description=f"Response for status code {status_code}"
+            description=f"Response for status code {status_code}",
         )
-    
+
     return openapi_responses
 
 
