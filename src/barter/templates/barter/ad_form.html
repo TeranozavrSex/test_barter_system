@@ -4,13 +4,27 @@
 <div class="container mt-4">
     <h2>{% if form.instance.pk %}Редактирование объявления{% else %}Создание объявления{% endif %}</h2>
     
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
         {% for field in form %}
             <div class="form-group mb-3">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
+                
+                {% if field.name == 'image' %}
+                    <div class="mb-3">
+                        {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" alt="Текущее изображение" style="max-height: 200px; max-width: 100%;">
+                                <p class="text-muted">Текущее изображение</p>
+                            </div>
+                        {% endif %}
+                        {{ field }}
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                
                 {% if field.help_text %}
                     <small class="form-text text-muted">{{ field.help_text }}</small>
                 {% endif %}

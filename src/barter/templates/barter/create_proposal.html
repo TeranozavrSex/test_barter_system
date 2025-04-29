@@ -1,22 +1,53 @@
-{% extends 'base.html' %}
+{% extends 'barter/base.html' %}
+
+{% block title %}Предложить обмен{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Создание предложения обмена</h2>
-    <p>Вы предлагаете обменять: <strong>{{ ad_sender.title }}</strong></p>
-    
-    <form method="post">
+    <h2>Предложить обмен</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Объявление: {{ ad_receiver.title }}</h5>
+            <p class="card-text">{{ ad_receiver.description }}</p>
+            <p class="card-text">
+                <small class="text-muted">
+                    Категория: {{ ad_receiver.category.name }} | 
+                    Состояние: {{ ad_receiver.get_condition_display }}
+                </small>
+            </p>
+        </div>
+    </div>
+
+    <form method="post" class="mt-4">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="{{ form.ad_receiver.id_for_label }}">Выберите объявление для обмена:</label>
-            {{ form.ad_receiver }}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="mb-3">
+            <label for="{{ form.ad_sender.id_for_label }}" class="form-label">{{ form.ad_sender.label }}</label>
+            {{ form.ad_sender }}
+            {% if form.ad_sender.help_text %}
+                <div class="form-text">{{ form.ad_sender.help_text }}</div>
+            {% endif %}
         </div>
-        <div class="form-group">
-            <label for="{{ form.comment.id_for_label }}">Комментарий к предложению:</label>
+
+        <div class="mb-3">
+            <label for="{{ form.comment.id_for_label }}" class="form-label">{{ form.comment.label }}</label>
             {{ form.comment }}
+            {% if form.comment.help_text %}
+                <div class="form-text">{{ form.comment.help_text }}</div>
+            {% endif %}
         </div>
+
         <button type="submit" class="btn btn-primary">Отправить предложение</button>
-        <a href="{% url 'barter:ad_detail' ad_sender.id %}" class="btn btn-secondary">Отмена</a>
+        <a href="{% url 'barter:ad_detail' ad_receiver.id %}" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
 {% endblock %} 

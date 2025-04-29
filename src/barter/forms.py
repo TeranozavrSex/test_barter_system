@@ -5,7 +5,7 @@ from .models import Ad, ExchangeProposal
 class AdCreateForm(forms.ModelForm):
     class Meta:
         model = Ad
-        fields = ['title', 'description', 'category', 'condition']
+        fields = ['title', 'description', 'image', 'category', 'condition']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -15,6 +15,7 @@ class AdCreateForm(forms.ModelForm):
         labels = {
             'title': 'Заголовок',
             'description': 'Описание',
+            'image': 'Изображение',
             'category': 'Категория',
             'condition': 'Состояние',
         }
@@ -23,11 +24,10 @@ class AdCreateForm(forms.ModelForm):
 class AdUpdateForm(forms.ModelForm):
     class Meta:
         model = Ad
-        fields = ['title', 'description', 'image_url', 'category', 'condition', 'is_active']
+        fields = ['title', 'description', 'image', 'category', 'condition', 'is_active']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
-            'image_url': forms.URLInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'condition': forms.Select(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
@@ -35,7 +35,7 @@ class AdUpdateForm(forms.ModelForm):
         labels = {
             'title': 'Заголовок',
             'description': 'Описание',
-            'image_url': 'URL изображения',
+            'image': 'Изображение',
             'category': 'Категория',
             'condition': 'Состояние',
             'is_active': 'Активно',
@@ -45,8 +45,12 @@ class AdUpdateForm(forms.ModelForm):
 class ExchangeProposalForm(forms.ModelForm):
     class Meta:
         model = ExchangeProposal
-        fields = ['ad_receiver', 'comment']
+        fields = ['ad_sender', 'comment']
+        labels = {
+            'ad_sender': 'Ваше объявление для обмена',
+            'comment': 'Комментарий к предложению'
+        }
         widgets = {
-            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'ad_receiver': forms.Select(attrs={'class': 'form-control'})
+            'comment': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+            'ad_sender': forms.Select(attrs={'class': 'form-select'})
         } 

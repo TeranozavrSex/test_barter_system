@@ -42,8 +42,13 @@
     {% for ad in ads %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                {% if ad.image_url %}
-                    <img src="{{ ad.image_url }}" class="card-img-top" alt="{{ ad.title }}">
+                {% if ad.image %}
+                    <img src="{{ ad.image.url }}" class="card-img-top" alt="{{ ad.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top text-center bg-light py-5" style="height: 200px;">
+                        <i class="fa fa-image fa-4x text-muted"></i>
+                        <p class="mt-2 text-muted">Нет изображения</p>
+                    </div>
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ ad.title }}</h5>

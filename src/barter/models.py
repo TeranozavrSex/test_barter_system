@@ -29,11 +29,11 @@ class Ad(models.Model):
     description = models.TextField(
         verbose_name=_('Описание')
     )
-    image_url = models.URLField(
-        max_length=500,
+    image = models.ImageField(
+        upload_to='ads_images',
         blank=True,
         null=True,
-        verbose_name=_('URL изображения')
+        verbose_name=_('Изображение')
     )
     category = models.CharField(
         max_length=20,

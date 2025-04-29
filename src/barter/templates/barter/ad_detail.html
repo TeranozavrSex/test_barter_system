@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="card">
-    {% if ad.image_url %}
-        <img src="{{ ad.image_url }}" class="card-img-top" alt="{{ ad.title }}">
+    {% if ad.image %}
+        <img src="{{ ad.image.url }}" class="card-img-top" alt="{{ ad.title }}">
     {% endif %}
     <div class="card-body">
         <h1 class="card-title">{{ ad.title }}</h1>
@@ -21,7 +21,7 @@
                 <a href="{% url 'barter:ad_update' ad.pk %}" class="btn btn-primary">Редактировать</a>
                 <a href="{% url 'barter:ad_delete' ad.pk %}" class="btn btn-danger">Удалить</a>
             {% else %}
-                <a href="#" class="btn btn-success">Предложить обмен</a>
+                <a href="{% url 'barter:create_proposal' ad.pk %}" class="btn btn-success">Предложить обмен</a>
             {% endif %}
             <a href="{% url 'barter:ad_list' %}" class="btn btn-secondary">Назад к списку</a>
         </div>
